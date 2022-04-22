@@ -3,7 +3,7 @@
 currently includes:
 * git
 * nvim
- * init.vim & coc settings
+  * init.vim & coc settings
 * tmux
 * zsh
   * rc & pre-oh-my-zsh
