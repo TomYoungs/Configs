@@ -1,0 +1,9 @@
+[user]
+	name = Tom Youngs
+	email = tomfyoungs@gmail.com
+[alias]
+	aa = add --all
+	s = status
+	c = commit
+	co = checkout
+	hisv = log --graph --full-history --all --pretty=format:\"%h%x09%d%x20%s\"
