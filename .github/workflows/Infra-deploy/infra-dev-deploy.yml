@@ -1,0 +1,62 @@
+name: terraform infra deploy dev
+
+on:
+  workflow_dispatch:
+    
+jobs:
+  terraform-plan:
+    name: Terraform plan
+    runs-on: ubuntu-latest
+    env:
+      TF_IN_AUTOMATION: true
+    defaults:
+      run:
+        working-directory: infra/envs/dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Connect to Terraform Cloud
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TFE_TOKEN }}
+
+      - name: Check formatting
+        id: fmt
+        run: terraform fmt -check
+
+      - name: Initialize Terraform
+        id: init
+        run: terraform init
+
+      - name: Terraform Plan
+        shell: bash
+        id: plan
+        run: terraform plan -no-color
+        continue-on-error: false
+
+  terraform-apply:
+    name: Terraform apply
+    needs: terraform-plan
+    environment: dev
+    runs-on: ubuntu-latest
+    env:
+      TF_IN_AUTOMATION: true
+    defaults:
+      run:
+        working-directory: infra/envs/dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Connect to Terraform Cloud
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TFE_TOKEN }}
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply
